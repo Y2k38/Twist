@@ -407,7 +407,7 @@ function dependenciesinstall(){
     if [ "$packagemanagertype" = "a" ]; then
         apt-get -yq update || dependenciesinstallerr "Update"
         apt-get -yq upgrade || dependenciesinstallerr "Upgrade"
-        apt-get -yq install wget gawk grep curl sed git gcc swig gettext autoconf automake make libtool perl cpio xmlto asciidoc cron fail2ban net-tools dnsutils rng-tools libc-ares-dev libev-dev openssl libssl-dev zlib1g-dev libpcre3-dev libevent-dev build-essential python3-dev python3-pip python3-setuptools python3-m2crypto
+        apt-get -yq install wget gawk grep curl sed git gcc swig gettext autoconf automake make libtool perl cpio xmlto asciidoc cron fail2ban net-tools dnsutils rng-tools libc-ares-dev libev-dev openssl libssl-dev zlib1g-dev libpcre3-dev libevent-dev build-essential python3-dev python3-pip python3-setuptools python-m2crypto
         [ "$?" != "0" ] && dependenciesinstallerr "Install"
         [ "$FWS" = "enable" ] && { apt-get -yq install apache2 || dependenciesinstallerr "Apache"; }
     elif [ "$packagemanagertype" = "y" ]; then
@@ -423,7 +423,7 @@ function dependenciesinstall(){
         [ "$?" != "0" ] && dependenciesinstallerr "Install"
         [ "$FWS" = "enable" ] && { pacman -Syu --noconfirm apache || dependenciesinstallerr "Apache"; }
     fi
-    pip install -q qrcode || { echo ""; twistlog "Cannot Install QRCode"; echo -e "# [\033[31;1mCannot Install QRCode, You may unable to configure clients by QRCode! \033[0m]"; echo ""; sleep 3; }
+    pip3 install -q qrcode || { echo ""; twistlog "Cannot Install QRCode"; echo -e "# [\033[31;1mCannot Install QRCode, You may unable to configure clients by QRCode! \033[0m]"; echo ""; sleep 3; }
 }
 
 function tcpbbrenable(){
@@ -504,7 +504,7 @@ function sslibevinstall(){
         wget -t 3 -T 30 -nv -O libsodium-${libsodiumver}.tar.gz https://github.com/jedisct1/libsodium/releases/download/${libsodiumver}-RELEASE/libsodium-${libsodiumver}.tar.gz
         [ "$?" != "0" ] && sslibevinstallerr "libsodium-${libsodiumver}"
         [ -d libsodium-${libsodiumver} ] && rm -rf libsodium-${libsodiumver}
-        tar zxf libsodium-${libsodiumver}.tar.gz
+        tar zxf libsodium-${libsodiumver}.tar.gz && mv libsodium-stable libsodium-${libsodiumver}
         pushd libsodium-${libsodiumver}
         ./configure --prefix=/usr && make "-j$((MAKECORES+1))" && make install || sslibevinstallerr "libsodium-${libsodiumver}" err
         popd
